@@ -2,7 +2,15 @@
   <a
     href
     @click.prevent="onClick"
-    class="cursor-pointer text-70 hover:text-primary no-underline flex items-center"
+    class="
+      cursor-pointer
+      text-70
+      hover:text-primary
+      no-underline
+      flex
+      items-center
+    "
+    title="Duplicate"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -40,19 +48,19 @@ export default {
           relations_except: this.field.relations_except || null,
           relations_override: this.field.relations_override || null,
         })
-        .then(response => {
+        .then((response) => {
           window.location.replace(response.data.destination);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
-    }
+    },
   },
 
   mounted() {
     let parentElement = this.$el.parentElement;
     parentElement.classList.add("td-fit");
     parentElement.style.paddingRight = "0px";
-  }
+  },
 };
 </script>
