@@ -35,7 +35,7 @@ class DuplicateController extends Controller
             return [
                 'status' => 404,
                 'message' => 'No model found.',
-                'destination' => config('nova.url') . config('nova.path') . 'resources/' . $resource . '/'
+                'destination' => '/' . trim(config('nova.path'), '/') . '/resources/' . $resource . '/'
             ];
         }
 
@@ -45,7 +45,7 @@ class DuplicateController extends Controller
         return [
             'status' => 200,
             'message' => 'Done',
-            'destination' => rtrim(config('nova.url').config('nova.path'), '/') . '/resources/' . $resource . '/' . $newModel->getKey()."/edit"
+            'destination' => '/' . trim(config('nova.path'), '/') . '/resources/' . $resource . '/' . $newModel->getKey()."/edit"
         ];
     }
 
