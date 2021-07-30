@@ -85,19 +85,30 @@ class DuplicateController extends Controller
     {
         // tested only with hasMany
 
-        if (!count($relations)){
+        if (!count($relations)) {
             return;
         }
 
         $originalModel->load($relations);
 
         foreach ($originalModel->getRelations() as $relationName => $items) {
-            /** @var BelongsTo $relation */
             $relation = $newModel->{$relationName}();
-            $relationOverride = array_merge(Arr::wrap(Arr::get($override, $relationName)), [$relation->getForeignKeyName() => $newModel->getKey()]);
-            /** @var Model $item */
-            foreach ($items as $item) {
-                $this->replicate($item, $except, $relationOverride);
+            $relationType = (new \ReflectionClass($relation))->getShortName();
+            if ($relationType === 'BelongsToMany') {
+                $withOrder = $items?->first()?->pivot && array_key_exists('order', $items?->first()?->pivot?->toArray());
+                if ($withOrder) {
+                    $relation->sync($items->mapWithKeys(fn ($item) => [$item->id => ['order' => $item->pivot->order]]));
+                } else {
+                    $relation->sync($items->pluck('id'));
+                }
+            } elseif ($relationType === 'HasMany') {
+                $relationOverride = array_merge(
+                    Arr::wrap(Arr::get($override, $relationName)),
+                    [$relation->getForeignKeyName() => $newModel->getKey()]
+                );
+                foreach ($items as $item) {
+                    $this->replicate($item, $except, $relationOverride);
+                }
             }
         }
     }
