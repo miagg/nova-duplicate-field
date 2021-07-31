@@ -60,7 +60,7 @@ class DuplicateController extends Controller
      */
     private function replicate(Model $model, array $except = [], array $override = [], array $relations = [], array $relationsExcept = [], array $relationsOverride = [])
     {
-        $newModel = $model->replicate(array_keys($except));
+        $newModel = $model->replicate($except);
 
         foreach ($override as $field => $value) {
             $newModel->{$field} = $value;
